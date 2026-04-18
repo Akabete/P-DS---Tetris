@@ -6,10 +6,10 @@
 #define BOARD_OFFSET_X 400
 #define BOARD_OFFSET_Y 50
 
-#define BOARD_WIDTH 300
-#define BOARD_HEIGHT 300
+#define BOARD_WIDTH 20
+#define BOARD_HEIGHT 10
 
-#define NEXT_BLOCK_X 12
+#define NEXT_BLOCK_X (BOARD_WIDTH + 12)
 #define NEXT_BLOCK_Y 4
 
 #define EMPTY_SPACE_VALUE 0
