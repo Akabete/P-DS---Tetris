@@ -13,4 +13,6 @@ void draw_next_piece();
 void draw_tile(int x, int y, int color);
 void draw_end_screen();
 
+void draw_frame();
+
 #endif

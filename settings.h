@@ -4,13 +4,15 @@
 #define SETTINGS_H
 
 #define BOARD_OFFSET_X 400
-#define BOARD_OFFSET_Y 50
 
-#define BOARD_WIDTH 20
-#define BOARD_HEIGHT 10
+#define BOARD_WIDTH 10
+#define BOARD_HEIGHT 20
 
-#define NEXT_BLOCK_X (BOARD_WIDTH + 12)
-#define NEXT_BLOCK_Y 4
+#define NEXT_BLOCK_X (BOARD_WIDTH + 2)
+#define NEXT_BLOCK_Y (BOARD_HEIGHT / 2)
+
+#define PIECE_AMOUNT 7
+#define FRAME_COUNTER_LIMIT 60
 
 #define EMPTY_SPACE_VALUE 0
 #define WALL_VALUE 9

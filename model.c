@@ -9,6 +9,8 @@ bool is_game_over = false;
 
 int tile_size;
 
+int board_offset_x, board_offset_y;
+
 void board_init(){
     for(int y = 0; y < BOARD_HEIGHT; y++){
         for(int x = 0; x < BOARD_WIDTH; x++)
@@ -18,18 +20,18 @@ void board_init(){
 
 void spawn_piece(int *frame_counter) {
     if(next_type == -1){
-        active_type = rand() % 7;
-        next_type = rand() % 7;
+        active_type = rand() % PIECE_AMOUNT;
+        next_type = rand() % PIECE_AMOUNT;
     } 
     else{
         active_type = next_type;
-        next_type = rand() % 7;
+        next_type = rand() % PIECE_AMOUNT;
     }
 
     active_rotation = 0;
     active_y = 0;
     active_x = (BOARD_WIDTH / 2) - 2;
-    *frame_counter = 60;
+    *frame_counter = FRAME_COUNTER_LIMIT;
 }
 
 int can_move(int next_y, int next_x, int next_rotation){
@@ -71,41 +73,72 @@ void freeze_piece(){
     }
 }
 
-void clear_lines(){
-    for(int y = BOARD_HEIGHT - 1; y >= 0; y--){
-        bool is_line_full = true;
-        for(int x = 0; x < BOARD_WIDTH; x++){
-            if(board[y][x] == EMPTY_SPACE_VALUE ||board[y][x] == DELETED_SPACE_VALUE){
-                is_line_full = false;
-                break;
-            }
-        }
-        if (is_line_full){
-            for(int x = 0; x < BOARD_WIDTH; x++){
-                board[y][x] = DELETED_SPACE_VALUE;
-            }
-            bool has_something_moved = false;
-            do{
-                has_something_moved = false;
-                for(int deleting_y = BOARD_HEIGHT - 1; deleting_y >= 1; deleting_y--){
-                    for(int deleting_x = 0; deleting_x < BOARD_WIDTH; deleting_x++){
-                        if (board[deleting_y][deleting_x] == DELETED_SPACE_VALUE && board[deleting_y - 1][deleting_x] != DELETED_SPACE_VALUE){
-                            board[deleting_y][deleting_x] = board[deleting_y - 1][deleting_x];
-                            board[deleting_y - 1][deleting_x] = DELETED_SPACE_VALUE;
-                            has_something_moved = true;
-                        }
-                    }
-                }
-            }while(has_something_moved);
-            y++;
-
+bool is_line_full(int y){
+    for(int x = 0; x < BOARD_WIDTH; x++){
+        if(board[y][x] == EMPTY_SPACE_VALUE || board[y][x] == DELETED_SPACE_VALUE){
+            return false;
         }
     }
-    for(int y = BOARD_HEIGHT - 1; y >= 0; y--){
-        for(int x = 0; x < BOARD_WIDTH; x++){
-            if (board[y][x] == DELETED_SPACE_VALUE || board[y][x] == EMPTY_SPACE_VALUE){
-                board[y][x] = EMPTY_SPACE_VALUE;
+    return true;
+}
+
+void mark_line_deleted(int y){
+    for(int x = 0; x < BOARD_WIDTH; x++){
+        board[y][x] = DELETED_SPACE_VALUE;
+    }
+}
+
+void move_blocks_down(){
+    bool has_something_moved;
+    do{
+        has_something_moved = false;
+        for(int y = BOARD_HEIGHT - 1; y >= 1; y--){
+            for(int x = 0; x < BOARD_WIDTH; x++){
+                if(board[y][x] == DELETED_SPACE_VALUE && board[y - 1][x] != DELETED_SPACE_VALUE){
+                    board[y][x] = board[y - 1][x];
+                    board[y - 1][x] = DELETED_SPACE_VALUE;
+                    has_something_moved = true;
+                }
             }
         }
+    }while(has_something_moved);
+}
+
+void clean_deleted_space(){
+    for(int y = BOARD_HEIGHT - 1; y >= 0; y--){
+        for(int x = 0; x < BOARD_WIDTH; x++){
+            if(board[y][x] == DELETED_SPACE_VALUE)
+                board[y][x] = EMPTY_SPACE_VALUE;
+        }
+    }
+}
+
+void clear_lines(){
+    for(int y = BOARD_HEIGHT - 1; y >= 0; y--){
+        if(is_line_full(y)){
+            mark_line_deleted(y);
+            move_blocks_down();
+            y++;            
+        }
+    }
+    clean_deleted_space();
+}
+
+void update_game_state(int *frame_counter){
+    (*frame_counter)++;
+
+    if (*frame_counter >= FRAME_COUNTER_LIMIT){
+        if (can_move(active_y + 1, active_x, active_rotation))
+            active_y++;
+
+        else{
+            freeze_piece();
+            clear_lines();
+            spawn_piece(frame_counter);
+
+            if (!can_move(active_y, active_x, active_rotation))
+                is_game_over = true;
+        }
+        *frame_counter = 0;
     }
 }

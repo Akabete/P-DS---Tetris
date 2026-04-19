@@ -14,51 +14,33 @@ int main(int argc, char* argv[])
 	
 	
 	if (gfx_init()) exit(3);
+
+	int max_tile_height = gfx_screenHeight() / BOARD_HEIGHT;
+	int max_tile_width = gfx_screenWidth() / (NEXT_BLOCK_X + 4);
+
+	tile_size = (max_tile_height < max_tile_width) ? max_tile_height : max_tile_width;
+
+	board_offset_y = (gfx_screenHeight() - BOARD_HEIGHT * tile_size) / 2;
+	board_offset_x = (gfx_screenWidth() - (NEXT_BLOCK_X + 4) * tile_size) / 2; 
 	
-	int min_screen_height = (gfx_screenHeight() - BOARD_OFFSET_Y) / BOARD_HEIGHT;
-	int min_screen_width = (gfx_screenWidth() - BOARD_OFFSET_X) / BOARD_WIDTH;
-
-	tile_size = (min_screen_height < min_screen_width) ? min_screen_height : min_screen_width;
-
-
 	int frame_counter = 0;
 	
 	board_init();
 	spawn_piece(&frame_counter);
 
 	while(!is_game_over){
-		gfx_filledRect(0, 0, gfx_screenWidth() - 1, gfx_screenHeight() - 1, BLACK);
-	
-		draw_board();
-		draw_walls();
+		input_handler();
+		update_game_state(&frame_counter);
+		draw_frame();
 
-		movement_handler(&frame_counter);
-		draw_active_piece();
-		draw_next_piece();
-		
-		frame_counter++;
-		
-		if (frame_counter >= 60){
-			if (can_move(active_y + 1, active_x, active_rotation))
-			active_y++;
-			else{
-				freeze_piece();
-				clear_lines();
-				spawn_piece(&frame_counter);
 
-				if(!can_move(active_y, active_x, active_rotation)){
-					is_game_over = true;
-					draw_end_screen();
-				}
-			}
-
-		frame_counter = 0;
-		}
-
-		gfx_updateScreen();
 		SDL_Delay(10);
 	}
 
-	gfx_getkey();
+	draw_frame();
+
+	while(true)
+		if(game_over_quit()) break;
+	
 	return 0;
 }

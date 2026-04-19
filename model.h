@@ -15,6 +15,9 @@ extern int active_rotation;
 
 extern int tile_size;
 
+extern int board_offset_x;
+extern int board_offset_y;
+
 extern bool is_game_over;
 
 extern int board[BOARD_HEIGHT][BOARD_WIDTH];
@@ -36,6 +39,12 @@ int can_rotate();
 
 void freeze_piece();
 
+bool is_line_full(int y);
+void mark_line_deleted(int y);
+void move_blocks_down();
+void clean_deleted_space();
 void clear_lines();
+
+void update_game_state(int *frame_counter);
 
 #endif
