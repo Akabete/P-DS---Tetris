@@ -7,21 +7,17 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-extern int active_x;
-extern int active_y;
-extern int active_type;
-extern int next_type;
-extern int active_rotation;
-
-extern int tile_size;
-
-extern int board_offset_x;
-extern int board_offset_y;
-
 extern bool is_game_over;
-
-extern int board[BOARD_HEIGHT][BOARD_WIDTH];
 extern char pieces[7][4][4][4];
+
+typedef struct {
+    int grid[BOARD_HEIGHT][BOARD_WIDTH];
+    int tile_size;
+    int offset_x;
+    int offset_y;
+} game_board;
+
+extern game_board board;
 
 typedef struct{
     int x;
@@ -29,6 +25,9 @@ typedef struct{
     int type;
     int rotation;
 } falling_piece;
+
+extern falling_piece active_piece;
+extern falling_piece next_piece;
 
 void board_init();
 

@@ -18,10 +18,10 @@ int main(int argc, char* argv[])
 	int max_tile_height = gfx_screenHeight() / BOARD_HEIGHT;
 	int max_tile_width = gfx_screenWidth() / (NEXT_BLOCK_X + 4);
 
-	tile_size = (max_tile_height < max_tile_width) ? max_tile_height : max_tile_width;
+	board.tile_size = (max_tile_height < max_tile_width) ? max_tile_height : max_tile_width;
 
-	board_offset_y = (gfx_screenHeight() - BOARD_HEIGHT * tile_size) / 2;
-	board_offset_x = (gfx_screenWidth() - (NEXT_BLOCK_X + 4) * tile_size) / 2; 
+	board.offset_y = (gfx_screenHeight() - BOARD_HEIGHT * board.tile_size) / 2;
+	board.offset_x = (gfx_screenWidth() - (NEXT_BLOCK_X + 4) * board.tile_size) / 2; 
 	
 	int frame_counter = 0;
 	

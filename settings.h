@@ -11,6 +11,9 @@
 #define NEXT_BLOCK_X (BOARD_WIDTH + 2)
 #define NEXT_BLOCK_Y (BOARD_HEIGHT / 2)
 
+#define PIECE_SIZE 4
+#define ROTATION_STATES 4
+
 #define PIECE_AMOUNT 7
 #define FRAME_COUNTER_LIMIT 60
 

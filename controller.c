@@ -7,15 +7,15 @@ void horizontal_movement_handler(){
 
     if (gfx_isKeyDown(SDLK_LEFT) &&
         horizontal_timer == 0 &&
-        can_move(active_y, active_x - 1, active_rotation)){
-            active_x--;
+        can_move(active_piece.y, active_piece.x - 1, active_piece.rotation)){
+            active_piece.x--;
             horizontal_timer = BLOCK_HORIZONTAL_SPEED;
         }
 
     else if (gfx_isKeyDown(SDLK_RIGHT) &&
             horizontal_timer == 0 &&
-            can_move(active_y, active_x + 1, active_rotation)){
-                active_x++;
+            can_move(active_piece.y, active_piece.x + 1, active_piece.rotation)){
+                active_piece.x++;
                 horizontal_timer = BLOCK_HORIZONTAL_SPEED;
             }
 
@@ -26,13 +26,13 @@ void horizontal_movement_handler(){
 
 void rotation_handler(){
     int potential_rotation = can_rotate();
-    if (potential_rotation != active_rotation)
-        active_rotation = potential_rotation;
+    if (potential_rotation != active_piece.rotation)
+        active_piece.rotation = potential_rotation;
 }
 
 void hard_drop_handler(){
-    while(can_move(active_y + 1, active_x, active_rotation))
-        active_y += 1;
+    while(can_move(active_piece.y + 1, active_piece.x, active_piece.rotation))
+        active_piece.y += 1;
 }
 
 
